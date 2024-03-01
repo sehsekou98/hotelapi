@@ -1,4 +1,9 @@
 package org.sekou.lisamhotel.service;
 
-public class BookedRoomServiceImpl {
+import org.sekou.lisamhotel.model.BookedRoom;
+
+import java.util.List;
+
+public interface BookedRoomServiceImpl {
+    List<BookedRoom> getAllBookingsByRoomsId(Long roomId);
 }

@@ -42,4 +42,9 @@ public class Room {
         String bookingCode = RandomStringUtils.randomNumeric(10);
         booking.setBookingConfirmationCode(bookingCode);
     }
+
+    public List<BookedRoom> geAllBookedRoomsById(Long id) {
+
+        return null;
+    }
 }
