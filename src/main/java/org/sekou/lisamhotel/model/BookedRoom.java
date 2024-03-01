@@ -23,7 +23,7 @@ public class BookedRoom {
     @Column(name = "check_In")
     private LocalDate checkInDate;
 
-    @Column(name = "check_In")
+    @Column(name = "check_Out")
     private LocalDate checkOutDate;
 
     @Column(name = "FullName")
