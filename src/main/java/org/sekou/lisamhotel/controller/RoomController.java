@@ -9,6 +9,7 @@ import org.sekou.lisamhotel.response.BookedRoomResponse;
 import org.sekou.lisamhotel.response.RoomResponse;
 import org.sekou.lisamhotel.service.BookedRoomServiceImpl;
 import org.sekou.lisamhotel.service.RoomServiceImp;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,10 +30,10 @@ public class RoomController {
     private final BookedRoomServiceImpl bookedRoomServiceImpl;
 
     @PostMapping("/add/new-room")
-    public ResponseEntity<RoomResponse>addNewRoom(
+    public ResponseEntity<RoomResponse> addNewRoom(
             @RequestParam("photo") MultipartFile photo,
             @RequestParam("roomType") String roomType,
-            @RequestParam("roomPrice")BigDecimal roomPrice) throws SQLException, IOException {
+            @RequestParam("roomPrice") BigDecimal roomPrice) throws SQLException, IOException {
 
         Room saveRoom = roomServiceImp.addNewRoom(photo, roomType, roomPrice);
         RoomResponse response = new RoomResponse(saveRoom.getId(),
@@ -46,29 +47,36 @@ public class RoomController {
         return roomServiceImp.getAllRoomTypes();
     }
 
+    @GetMapping("/all-rooms")
     public ResponseEntity<List<RoomResponse>> getAllRooms() throws SQLException {
         List<Room> rooms = roomServiceImp.getAllRooms();
         List<RoomResponse> roomResponses = new ArrayList<>();
-        for(Room room : rooms) {
-          byte[] photoBytes = roomServiceImp.getRoomPhotoByRoomId(room.getId());
-          if(photoBytes != null && photoBytes.length > 0) {
-              String base64Photo = Base64.encodeBase64String(photoBytes);
-              RoomResponse roomResponse = getRoomResponse(room);
-              roomResponse.setPhoto(base64Photo);
-              roomResponses.add(roomResponse);
-          }
+        for (Room room : rooms) {
+            byte[] photoBytes = roomServiceImp.getRoomPhotoByRoomId(room.getId());
+            if (photoBytes != null && photoBytes.length > 0) {
+                String base64Photo = Base64.encodeBase64String(photoBytes);
+                RoomResponse roomResponse = getRoomResponse(room);
+                roomResponse.setPhoto(base64Photo);
+                roomResponses.add(roomResponse);
+            }
         }
         return ResponseEntity.ok(roomResponses);
     }
 
+    @DeleteMapping("/delete/room/{roomId}")
+    public ResponseEntity<Void> deleteRoom(@PathVariable Long roomId){
+        roomServiceImp.deleteRoom(roomId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     private RoomResponse getRoomResponse(Room room) throws SQLException {
         List<BookedRoom> bookings = getAllBookingsByRoomId(room.getId());
-        List<BookedRoomResponse> bookingInfo = bookings
+        /* List<BookedRoomResponse> bookingInfo = bookings
                 .stream()
                 .map(booking -> new BookedRoomResponse(booking.getBookingId(),
                         booking.getCheckInDate(),
                         booking.getCheckOutDate(),
-                        booking.getBookingConfirmationCode())).toList();
+                        booking.getBookingConfirmationCode())).toList(); */
         byte[] photoBytes = null;
         Blob photoBlob = room.getPhoto();
         if (photoBlob != null) {
@@ -83,10 +91,8 @@ public class RoomController {
                 room.getRoomType(),
                 room.getRoomPrice(),
                 room.isBooked(),
-                photoBytes,
-                bookingInfo);
+                photoBytes);
     }
-
 
     private List<BookedRoom> getAllBookingsByRoomId(Long roomId) {
         return bookedRoomServiceImpl.getAllBookingsByRoomsId(roomId);
