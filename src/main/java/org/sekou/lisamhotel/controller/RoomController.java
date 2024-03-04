@@ -6,9 +6,8 @@ import org.sekou.lisamhotel.exception.PhotoRetrievalException;
 import org.sekou.lisamhotel.exception.ResourceNotFoundException;
 import org.sekou.lisamhotel.model.BookedRoom;
 import org.sekou.lisamhotel.model.Room;
-import org.sekou.lisamhotel.response.BookedRoomResponse;
 import org.sekou.lisamhotel.response.RoomResponse;
-import org.sekou.lisamhotel.service.BookedRoomServiceImpl;
+import org.sekou.lisamhotel.service.BookingRoomServiceImpl;
 import org.sekou.lisamhotel.service.RoomServiceImp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +29,7 @@ import java.util.Optional;
 public class RoomController {
 
     private final RoomServiceImp roomServiceImp;
-    private final BookedRoomServiceImpl bookedRoomServiceImpl;
+    private final BookingRoomServiceImpl bookedRoomServiceImpl;
 
     @PostMapping("/add/new-room")
     public ResponseEntity<RoomResponse> addNewRoom(

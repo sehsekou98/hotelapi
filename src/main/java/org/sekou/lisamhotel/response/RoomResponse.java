@@ -16,7 +16,7 @@ public class RoomResponse {
     private BigDecimal roomPrice;
     private boolean isBooked;
     private String photo;
-    private List<BookedRoomResponse>bookings;
+    private List<BookingRoomResponse>bookings;
 
     public RoomResponse(Long id, String roomType, BigDecimal roomPrice) {
         this.id = id;
