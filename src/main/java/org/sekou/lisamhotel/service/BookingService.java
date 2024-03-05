@@ -1,43 +1,42 @@
 package org.sekou.lisamhotel.service;
 
-
 import lombok.RequiredArgsConstructor;
 import org.sekou.lisamhotel.exception.InvalidBookingRequestException;
 import org.sekou.lisamhotel.exception.ResourceNotFoundException;
 import org.sekou.lisamhotel.model.BookedRoom;
 import org.sekou.lisamhotel.model.Room;
-import org.sekou.lisamhotel.repository.BookingRoomRepository;
+import org.sekou.lisamhotel.repository.BookingRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @Service
-public class BookingRoomService implements BookingRoomServiceImpl {
-    private final BookingRoomRepository bookingRoomRepository;
+@RequiredArgsConstructor
+public class BookingService implements IBookingService {
+    private final BookingRepository bookingRepository;
     private final RoomServiceImp roomServiceImp;
 
 
     @Override
-    public List<BookedRoom> getAllBookingRooms() {
-        return bookingRoomRepository.findAll();
+    public List<BookedRoom> getAllBookings() {
+        return bookingRepository.findAll();
     }
 
 
     @Override
-    public void cancleBooking(Long bookingId) {
-        bookingRoomRepository.deleteById(bookingId);
-
-
-
+    public List<BookedRoom> getBookingsByUserEmail(String email) {
+        return bookingRepository.findByGuestEmail(email);
     }
 
     @Override
-    public List<BookedRoom> getAllBookingsByRoomsId(Long roomId) {
-
-        return bookingRoomRepository.findBookingsByRoomId(roomId);
+    public void cancelBooking(Long bookingId) {
+        bookingRepository.deleteById(bookingId);
     }
 
+    @Override
+    public List<BookedRoom> getAllBookingsByRoomId(Long roomId) {
+        return bookingRepository.findByRoomId(roomId);
+    }
 
     @Override
     public String saveBooking(Long roomId, BookedRoom bookingRequest) {
@@ -49,7 +48,7 @@ public class BookingRoomService implements BookingRoomServiceImpl {
         boolean roomIsAvailable = roomIsAvailable(bookingRequest,existingBookings);
         if (roomIsAvailable){
             room.addBooking(bookingRequest);
-            bookingRoomRepository.save(bookingRequest);
+            bookingRepository.save(bookingRequest);
         }else{
             throw  new InvalidBookingRequestException("Sorry, This room is not available for the selected dates;");
         }
@@ -58,7 +57,7 @@ public class BookingRoomService implements BookingRoomServiceImpl {
 
     @Override
     public BookedRoom findByBookingConfirmationCode(String confirmationCode) {
-        return (BookedRoom) bookingRoomRepository.findByBookingConfirmationCode(confirmationCode)
+        return bookingRepository.findByBookingConfirmationCode(confirmationCode)
                 .orElseThrow(() -> new ResourceNotFoundException("No booking found with booking code :"+confirmationCode));
 
     }
@@ -85,6 +84,8 @@ public class BookingRoomService implements BookingRoomServiceImpl {
                                 && bookingRequest.getCheckOutDate().equals(bookingRequest.getCheckInDate()))
                 );
     }
+
+
 
 
 }
