@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin("http://localhost:5173")
-@RequiredArgsConstructor
+
 @RestController
+//@CrossOrigin("http://localhost:5173")
+@RequiredArgsConstructor
 @RequestMapping("/bookings")
 public class BookingController {
     private final IBookingService bookingService;
