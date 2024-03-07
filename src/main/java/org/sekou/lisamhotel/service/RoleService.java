@@ -51,7 +51,7 @@ public class RoleService implements IRoleService {
         Optional<User> user = userRepository.findById(userId);
         Optional<Role>  role = roleRepository.findById(roleId);
         if (role.isPresent() && role.get().getUsers().contains(user.get())){
-            role.get().removeUserFromRole((org.apache.catalina.User) user.get());
+            role.get().removeUserFromRole((User) user.get());
             roleRepository.save(role.get());
             return user.get();
         }
@@ -67,7 +67,7 @@ public class RoleService implements IRoleService {
                     user.get().getFirstName()+ " is already assigned to the" + role.get().getName()+ " role");
         }
         if (role.isPresent()){
-            role.get().assignRoleToUser((org.apache.catalina.User) user.get());
+            role.get().assignRoleToUser((User) user.get());
             roleRepository.save(role.get());
         }
         return user.get();
