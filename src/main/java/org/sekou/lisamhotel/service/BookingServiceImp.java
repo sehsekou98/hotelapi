@@ -4,7 +4,8 @@ import org.sekou.lisamhotel.model.BookedRoom;
 
 import java.util.List;
 
-public interface IBookingService {
+
+public interface BookingServiceImp {
     void cancelBooking(Long bookingId);
 
     List<BookedRoom> getAllBookingsByRoomId(Long roomId);
@@ -17,5 +18,3 @@ public interface IBookingService {
 
     List<BookedRoom> getBookingsByUserEmail(String email);
 }
-
-

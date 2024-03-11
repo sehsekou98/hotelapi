@@ -10,9 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
-public class BookingService implements IBookingService {
+public class BookingService implements BookingServiceImp {
     private final BookingRepository bookingRepository;
     private final RoomServiceImp roomServiceImp;
 

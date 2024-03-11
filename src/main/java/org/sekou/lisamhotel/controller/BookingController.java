@@ -8,7 +8,7 @@ import org.sekou.lisamhotel.model.BookedRoom;
 import org.sekou.lisamhotel.model.Room;
 import org.sekou.lisamhotel.response.BookingResponse;
 import org.sekou.lisamhotel.response.RoomResponse;
-import org.sekou.lisamhotel.service.IBookingService;
+import org.sekou.lisamhotel.service.BookingServiceImp;
 import org.sekou.lisamhotel.service.RoomServiceImp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,16 +19,15 @@ import java.util.List;
 
 
 @RestController
-//@CrossOrigin("http://localhost:5173")
 @RequiredArgsConstructor
 @RequestMapping("/bookings")
 public class BookingController {
-    private final IBookingService bookingService;
+    private final BookingServiceImp bookingServiceImp;
     private final RoomServiceImp roomServiceImp;
 
     @GetMapping("/all-bookings")
     public ResponseEntity<List<BookingResponse>> getAllBookings(){
-        List<BookedRoom> bookings = bookingService.getAllBookings();
+        List<BookedRoom> bookings = bookingServiceImp.getAllBookings();
         List<BookingResponse> bookingResponses = new ArrayList<>();
         for (BookedRoom booking : bookings){
             BookingResponse bookingResponse = getBookingResponse(booking);
@@ -41,7 +40,7 @@ public class BookingController {
     public ResponseEntity<?> saveBooking(@PathVariable Long roomId,
                                          @RequestBody BookedRoom bookingRequest){
         try{
-            String confirmationCode = bookingService.saveBooking(roomId, bookingRequest);
+            String confirmationCode = bookingServiceImp.saveBooking(roomId, bookingRequest);
             return ResponseEntity.ok(
                     "Room booked successfully, Your booking confirmation code is :"+confirmationCode);
 
@@ -53,7 +52,7 @@ public class BookingController {
     @GetMapping("/confirmation/{confirmationCode}")
     public ResponseEntity<?> getBookingByConfirmationCode(@PathVariable String confirmationCode){
         try{
-            BookedRoom booking = bookingService.findByBookingConfirmationCode(confirmationCode);
+            BookedRoom booking = bookingServiceImp.findByBookingConfirmationCode(confirmationCode);
             BookingResponse bookingResponse = getBookingResponse(booking);
             return ResponseEntity.ok(bookingResponse);
         }catch (ResourceNotFoundException ex){
@@ -63,7 +62,7 @@ public class BookingController {
 
     @GetMapping("/user/{email}/bookings")
     public ResponseEntity<List<BookingResponse>> getBookingsByUserEmail(@PathVariable String email) {
-        List<BookedRoom> bookings = bookingService.getBookingsByUserEmail(email);
+        List<BookedRoom> bookings = bookingServiceImp.getBookingsByUserEmail(email);
         List<BookingResponse> bookingResponses = new ArrayList<>();
         for (BookedRoom booking : bookings) {
             BookingResponse bookingResponse = getBookingResponse(booking);
@@ -74,7 +73,7 @@ public class BookingController {
 
     @DeleteMapping("/booking/{bookingId}/delete")
     public void cancelBooking(@PathVariable Long bookingId){
-        bookingService.cancelBooking(bookingId);
+        bookingServiceImp.cancelBooking(bookingId);
     }
 
     private BookingResponse getBookingResponse(BookedRoom booking) {
