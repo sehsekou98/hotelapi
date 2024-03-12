@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
+
+
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
@@ -51,6 +53,7 @@ public class UserService implements IUserService {
     @Override
     public User getUser(String email) {
         return (User) userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
+
 }

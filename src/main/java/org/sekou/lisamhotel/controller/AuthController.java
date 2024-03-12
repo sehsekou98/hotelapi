@@ -23,18 +23,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final IUserService iUserService;
+    private final IUserService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
 
     @PostMapping("/register-user")
     public ResponseEntity<?> registerUser(@RequestBody User user){
         try{
-            iUserService.registerUser(user);
+            userService.registerUser(user);
             return ResponseEntity.ok("Registration successful!");
 
         }catch (UserAlreadyExistsException e){
