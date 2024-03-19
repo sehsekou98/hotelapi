@@ -11,7 +11,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
       format_sql: true
 
   servlet:
@@ -22,5 +22,5 @@ spring:
 
 security:
   jwt:
-    secret-key:
+    secret-key: "adbe01cd-2327-474b-adb7-5f4a8e96519e"
     expires-length: 3600000

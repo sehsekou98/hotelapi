@@ -1,68 +1,34 @@
 package org.sekou.lisamhotel.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.Setter;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Entity
-@Table(name = "_user")
-
-public class User implements UserDetails {
+@Getter
+@Setter
+@NoArgsConstructor
+public class User {
     @Id
-    @GeneratedValue
-    private Integer id;
-    private String firstname;
-    private String lastname;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String firstName;
+    private String lastName;
     private String email;
     private String password;
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {CascadeType.PERSIST,
+                    CascadeType.MERGE, CascadeType.DETACH})
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> roles = new HashSet<>();
 
-    @Enumerated(EnumType.STRING)
-    private  Role role;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
-    }
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }
